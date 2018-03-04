@@ -8,7 +8,7 @@ import matplotlib.pyplot as plt
 
 out_label = 'pred'
 out_dir = '/home/jr0th/github/segmentation/out/'
-data_dir = '/home/jr0th/github/segmentation/data/set02/'
+data_dir = 'data/set02/'
 # use latest checkpoint
 weights_path = '/home/jr0th/github/segmentation/checkpoints/checkpoint.hdf5'
 

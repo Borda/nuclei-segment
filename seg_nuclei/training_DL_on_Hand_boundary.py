@@ -30,22 +30,20 @@ import sys
 # constants
 const_lr = 1e-4
 
-tag = 'DL_on_Hand_boundary_augment'
+tag = 'DL_on_Hand_boundary_soft'
 
 out_dir = '/home/jr0th/github/segmentation/out/' + tag + '/'
 tb_log_dir = "/home/jr0th/github/segmentation/tensorboard/" + tag + "/"
 chkpt_file = "/home/jr0th/github/segmentation/checkpoints/" + tag + "/checkpoint_{epoch:04d}.hdf5"
 csv_log_file = "/home/jr0th/github/segmentation/logs/" + tag + ".csv"
 
-train_dir_x = '/home/jr0th/github/segmentation/data/BBBC022/training/x_big/'
-train_dir_y = '/home/jr0th/github/segmentation/data/BBBC022/training/y_big_boundary_4/'
+train_dir = "data/BBBC022/training/"
+val_dir = "data/BBBC022/validation/"
 
-val_dir = "/home/jr0th/github/segmentation/data/BBBC022/validation/"
+y = "y_boundary_soft/"
 
-y = "y_boundary_4/"
-
-rescale_labels = False
-hard = True
+rescale_labels = True
+hard = False
 
 epochs = 200
 
@@ -69,15 +67,15 @@ data_type = 'images'
 # build session running on GPU 1
 configuration = tf.ConfigProto()
 configuration.gpu_options.allow_growth = True
-configuration.gpu_options.visible_device_list = "2"
+configuration.gpu_options.visible_device_list = "3"
 session = tf.Session(config = configuration)
 
 # apply session
 keras.backend.set_session(session)
     
-train_gen = helper.data_provider.random_sample_generator(
-    train_dir_x,
-    train_dir_y,
+train_gen = helper.data_provider.single_data_from_images_1d_y(
+    train_dir + "x/",
+    train_dir + y,
     batch_size,
     bit_depth,
     dim1,

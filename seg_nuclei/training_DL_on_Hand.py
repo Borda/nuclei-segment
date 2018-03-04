@@ -30,20 +30,19 @@ import sys
 # constants
 const_lr = 1e-4
 
-tag = 'DL_on_Hand_boundary_soft'
+tag = 'DL_on_Hand_8'
 
 out_dir = '/home/jr0th/github/segmentation/out/' + tag + '/'
 tb_log_dir = "/home/jr0th/github/segmentation/tensorboard/" + tag + "/"
 chkpt_file = "/home/jr0th/github/segmentation/checkpoints/" + tag + "/checkpoint_{epoch:04d}.hdf5"
 csv_log_file = "/home/jr0th/github/segmentation/logs/" + tag + ".csv"
 
-train_dir = "/home/jr0th/github/segmentation/data/BBBC022/training/"
-val_dir = "/home/jr0th/github/segmentation/data/BBBC022/validation/"
+train_dir = "data/BBBC022/training/"
+val_dir = "data/BBBC022/validation/"
 
-y = "y_boundary_soft/"
+y = "y_label_binary_8/"
 
 rescale_labels = True
-hard = False
 
 epochs = 200
 
@@ -64,16 +63,16 @@ bit_depth = 8
 
 data_type = 'images'
 
-# build session running on GPU 1
+# build session running on a specific GPU
 configuration = tf.ConfigProto()
 configuration.gpu_options.allow_growth = True
-configuration.gpu_options.visible_device_list = "3"
+configuration.gpu_options.visible_device_list = "2"
 session = tf.Session(config = configuration)
 
 # apply session
 keras.backend.set_session(session)
     
-train_gen = helper.data_provider.single_data_from_images_1d_y(
+train_gen = helper.data_provider.single_data_from_images(
     train_dir + "x/",
     train_dir + y,
     batch_size,
@@ -83,7 +82,7 @@ train_gen = helper.data_provider.single_data_from_images_1d_y(
     rescale_labels
 )
 
-val_gen = helper.data_provider.single_data_from_images_1d_y(
+val_gen = helper.data_provider.single_data_from_images(
     val_dir + 'x/',
     val_dir + y,
     val_batch_size,
@@ -94,18 +93,14 @@ val_gen = helper.data_provider.single_data_from_images_1d_y(
 )
 
 
+
 # build model
-model = helper.model_builder.get_model_1_class(dim1, dim2)
+model = helper.model_builder.get_model_3_class(dim1, dim2)
 model.summary()
 
-if(hard):
-    loss = "binary_crossentropy"
-    metrics = [keras.metrics.binary_accuracy, helper.metrics.recall, helper.metrics.precision]
-else:
-    loss = "mean_squared_error"
-    metrics = []
-
 optimizer = keras.optimizers.RMSprop(lr = const_lr)
+
+metrics = [keras.metrics.categorical_accuracy, helper.metrics.recall, helper.metrics.precision]
 
 model.compile(loss=loss, metrics=metrics, optimizer=optimizer)
 
@@ -117,9 +112,9 @@ callback_model_checkpoint = keras.callbacks.ModelCheckpoint(
     save_best_only=False
 )
 callback_csv = keras.callbacks.CSVLogger(filename=csv_log_file)
-callback_splits_and_merges = helper.callbacks.SplitsAndMergesLoggerBoundary(
+callback_splits_and_merges = helper.callbacks.SplitsAndMergesLogger3Class(
     data_type,
-    val_gen, 
+    val_gen,
     gen_calls = val_steps,
     log_dir=tb_log_dir
 )
@@ -138,8 +133,5 @@ statistics = model.fit_generator(
 )
     
 # visualize learning stats
-if(hard):
-    helper.visualize.visualize_learning_stats_boundary_hard(statistics, out_dir, metrics)
-else:
-    helper.visualize.visualize_learning_stats_boundary_soft(statistics, out_dir, metrics)
+helper.visualize.visualize_learning_stats(statistics, out_dir, metrics)
 print('Done! :)')

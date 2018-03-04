@@ -136,12 +136,12 @@ def random_sample_generator(x_big_dir, y_big_dir, batch_size, bit_depth, dim1, d
     if(debug):
         fig = plt.figure()
         plt.hist(y_big.flatten())
-        plt.savefig('/home/jr0th/github/segmentation/code/generated/y_hist')
+        plt.savefig('seg_nuclei/generated/y_hist')
         plt.close(fig)
 
         fig = plt.figure()
         plt.hist(x_big.flatten())
-        plt.savefig('/home/jr0th/github/segmentation/code/generated/x_hist')
+        plt.savefig('seg_nuclei/generated/x_hist')
         plt.close(fig)
     
     # get dimensions right – understand data set
@@ -207,13 +207,13 @@ def random_sample_generator(x_big_dir, y_big_dir, batch_size, bit_depth, dim1, d
                 fig = plt.figure()
                 plt.imshow(x[i, :, :, 0])
                 plt.colorbar()
-                plt.savefig('/home/jr0th/github/segmentation/code/generated/x_' + str(i))
+                plt.savefig('seg_nuclei/generated/x_' + str(i))
                 plt.close(fig)
 
                 fig = plt.figure()
                 plt.imshow(y[i, :, :, 0])
                 plt.colorbar()
-                plt.savefig('/home/jr0th/github/segmentation/code/generated/y_' + str(i))
+                plt.savefig('seg_nuclei/generated/y_' + str(i))
                 plt.close(fig)
             
         # return the buffer

@@ -16,7 +16,7 @@ configuration.gpu_options.visible_device_list = "2"
 session = tf.Session(config = configuration)
 
 out_dir = '/home/jr0th/github/segmentation/experiments/BBBC022_hand/DL_probmap/'
-data_dir = '/home/jr0th/github/segmentation/data/BBBC022_hand/all_images/'
+data_dir = 'data/BBBC022_hand/all_images/'
 
 # use latest checkpoint
 weights_path = '/home/jr0th/github/segmentation/results/BBBC022/0324_sample_size_500/checkpoints/checkpoint.hdf5'
