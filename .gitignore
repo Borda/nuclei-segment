@@ -8,7 +8,6 @@ __pycache__/
 *.pyc
 
 # IMAGES
-*.png
 *.tiff
 *.tif
 
